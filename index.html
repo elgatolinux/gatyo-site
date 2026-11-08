@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // applied before the first paint so a saved accent never flashes violet
+      try {
+        var a = localStorage.getItem('gatyo-accent')
+        if (/^(violet|pink|lavender|cyan|mint|amber|coral)$/.test(a)) document.documentElement.setAttribute('data-accent', a)
+      } catch (e) {}
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Gatyo · Client para Minecraft Bedrock en Android</title>
+    <meta name="description" content="Gatyo es un client para Minecraft Bedrock en Android (1.21.111): shaders, cuatro interfaces y personalización a fondo." />
+    <meta name="theme-color" content="#0B0614" />
+    <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="%BASE_URL%favicon-48.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Gatyo" />
+    <meta property="og:title" content="Gatyo" />
+    <meta property="og:description" content="Client para Minecraft Bedrock en Android. Shaders, cuatro interfaces y personalización a fondo." />
+    <meta property="og:url" content="https://elgatolinux.github.io/gatyo-site/" />
+    <meta property="og:image" content="https://elgatolinux.github.io/gatyo-site/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="675" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="%BASE_URL%fonts/outfit-latin-wght-normal.woff2" />
+    <link rel="preload" as="image" type="image/webp" media="(min-width: 768px)" href="%BASE_URL%media/art/hero-w.webp" />
+    <link rel="preload" as="image" type="image/webp" media="(max-width: 767px)" href="%BASE_URL%media/art/hero-p.webp" />
+
+    <style>
+      html, body { background: #0b0614; margin: 0; }
+      #pre { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; pointer-events: none; }
+      #pre .w { position: absolute; top: 0; bottom: 0; width: 50.5%; background: #0b0614; transform-origin: top; transition: transform .55s cubic-bezier(.76, 0, .24, 1); }
+      #pre .l { left: 0; }
+      #pre .r { right: 0; transition-delay: .07s; }
+      #pre .c { position: relative; text-align: center; color: #f5ebff; font: 500 12px/1 ui-monospace, 'JetBrains Mono', monospace; letter-spacing: .28em; transition: opacity .2s; }
+      #pre .c b { display: block; font: 600 28px/1 Outfit, system-ui, sans-serif; letter-spacing: 0; margin-bottom: 16px; color: rgb(var(--hi-rgb, 201 155 255)); }
+      #pre .c i { display: block; width: 132px; height: 1px; margin: 14px auto 0; background: rgb(var(--line-rgb, 88 45 150)); overflow: hidden; }
+      #pre .c u { display: block; height: 100%; background: rgb(var(--pink-rgb, 249 168 212)); transform: scaleX(0); transform-origin: left; }
+      #pre.out .w { transform: scaleY(0); }
+      #pre.out .c { opacity: 0; }
+      @media (prefers-reduced-motion: reduce) { #pre { display: none; } }
+    </style>
+  </head>
+  <body>
+    <div id="pre" aria-hidden="true">
+      <div class="w l"></div>
+      <div class="w r"></div>
+      <div class="c"><b>gatyo</b><span id="pre-n">000</span><i><u id="pre-b"></u></i></div>
+    </div>
+    <script>
+      (function () {
+        var root = document.getElementById('pre')
+        var num = document.getElementById('pre-n')
+        var bar = document.getElementById('pre-b')
+        var still = matchMedia('(prefers-reduced-motion: reduce)').matches
+        var DUR = still ? 0 : 700
+        var t0 = performance.now()
+        var ready = false
+        var done = false
+        function out() {
+          if (done) return
+          done = true
+          root.classList.add('out')
+          document.documentElement.classList.add('is-in')
+          window.dispatchEvent(new Event('gatyo:in'))
+          setTimeout(function () { root.remove() }, still ? 0 : 750)
+        }
+        window.__gatyoReady = function () { ready = true }
+        function tick(now) {
+          if (done) return
+          var k = Math.min(1, (now - t0) / (DUR || 1))
+          var v = Math.floor(k * (ready ? 100 : 99))
+          num.textContent = ('00' + v).slice(-3)
+          bar.style.transform = 'scaleX(' + v / 100 + ')'
+          if (k >= 1 && ready) out()
+          else requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+        setTimeout(out, 3200) // failsafe: never hold the page, even if the app fails
+      })()
+    </script>
+    <noscript>
+      <style>#pre { display: none; }</style>
+      <p style="color:#f5ebff;font:16px/1.5 system-ui,sans-serif;padding:24px">Gatyo: <a style="color:#f9a8d4" href="https://discord.gg/Hpzua3uQmV">Discord</a></p>
+    </noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
