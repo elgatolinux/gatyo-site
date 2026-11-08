@@ -34,7 +34,8 @@
     <style>
       html, body { background: #0b0614; margin: 0; }
       #pre { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; pointer-events: none; }
-      #pre .w { position: absolute; top: 0; bottom: 0; width: 50.5%; background: #0b0614; transform-origin: top; transition: transform .55s cubic-bezier(.76, 0, .24, 1); }
+      #pre picture img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.14); transition: opacity .5s; }
+      #pre .w { position: absolute; top: 0; bottom: 0; width: 50.5%; background: rgba(11, 6, 20, .74); transform-origin: top; transition: transform .55s cubic-bezier(.76, 0, .24, 1); }
       #pre .l { left: 0; }
       #pre .r { right: 0; transition-delay: .07s; }
       #pre .c { position: relative; text-align: center; color: #f5ebff; font: 500 12px/1 ui-monospace, 'JetBrains Mono', monospace; letter-spacing: .28em; transition: opacity .2s; }
@@ -42,12 +43,17 @@
       #pre .c i { display: block; width: 132px; height: 1px; margin: 14px auto 0; background: rgb(var(--line-rgb, 88 45 150)); overflow: hidden; }
       #pre .c u { display: block; height: 100%; background: rgb(var(--pink-rgb, 249 168 212)); transform: scaleX(0); transform-origin: left; }
       #pre.out .w { transform: scaleY(0); }
+      #pre.out picture img { opacity: 0; }
       #pre.out .c { opacity: 0; }
       @media (prefers-reduced-motion: reduce) { #pre { display: none; } }
     </style>
   </head>
   <body>
     <div id="pre" aria-hidden="true">
+      <picture>
+        <source media="(min-width: 768px)" srcset="%BASE_URL%media/art/hero-w.webp" />
+        <img src="%BASE_URL%media/art/hero-p.webp" alt="" fetchpriority="high" />
+      </picture>
       <div class="w l"></div>
       <div class="w r"></div>
       <div class="c"><b>gatyo</b><span id="pre-n">000</span><i><u id="pre-b"></u></i></div>

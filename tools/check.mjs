@@ -47,6 +47,8 @@ for (const vp of [{ width: 360, height: 800, isMobile: true, hasTouch: true }, {
   await ctx.close()
 }
 
+if (process.env.ONLY_LCP) { await browser.close(); process.exit(results.every(Boolean) ? 0 : 1) }
+
 // --- sound button, video lazy + pause off-screen
 {
   const { ctx, page } = await fresh(DESK)
