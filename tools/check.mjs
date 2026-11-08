@@ -148,7 +148,7 @@ for (const [langs, want] of [[['fr-FR', 'fr'], 'es'], [['en-US'], 'en'], [['es-M
   const { ctx, page } = await fresh(DESK, { langs: ['fr'] })
   await page.goto(url, { waitUntil: 'load' })
   await sleep(2400)
-  await page.click('.lang button:nth-child(2)')
+  await page.click('.lang a:nth-child(2)')
   await sleep(400)
   const a = await page.evaluate(() => ({ lang: document.documentElement.lang, title: document.title, phrase: document.querySelector('.hero-phrase').textContent }))
   await page.reload({ waitUntil: 'load' })
@@ -176,6 +176,21 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]]) {
   const kept = await css()
   const target = await page.evaluate(() => { const d = document.querySelector('.dots button'); const r = d.getBoundingClientRect(); return { w: r.width, h: r.height, wrapped: document.documentElement.scrollWidth - innerWidth } })
   report(`accent picker ${name}`, before.accent === '168 85 247' && n === 7 && after.accent === '34 211 238' && pressed.join() === 'cyan' && heroColorChanged && kept.accent === '34 211 238' && target.wrapped <= 0, JSON.stringify({ before: before.accent, after: after.accent, kept: kept.attr, ...target }))
+  await ctx.close()
+}
+
+// --- localized URLs and SEO tags
+for (const [path, want, browser_] of [['es/', 'es', ['en-US']], ['en/', 'en', ['es-MX']]]) {
+  const { ctx, page } = await fresh(DESK, { langs: browser_ })
+  await page.goto(url + path, { waitUntil: 'load' })
+  await sleep(2400)
+  const r = await page.evaluate(() => ({ lang: document.documentElement.lang, canonical: document.querySelector('link[rel=canonical]')?.href, alt: [...document.querySelectorAll('link[rel=alternate]')].map((l) => l.hreflang).join(), h1: document.querySelector('h1')?.getAttribute('aria-label'), cta: document.querySelector('.cta')?.href }))
+  report(`/${path} forces ${want} whatever the browser says`, r.lang === want && r.canonical?.endsWith('/' + path) && r.alt === 'es,en,x-default' && r.h1 === 'Gatyo' && r.cta === DISCORD, JSON.stringify(r))
+  await page.click(`.lang a:nth-child(${want === 'es' ? 2 : 1})`)
+  await sleep(400)
+  const other = want === 'es' ? 'en' : 'es'
+  const after = await page.evaluate(() => ({ path: location.pathname, lang: document.documentElement.lang, canonical: document.querySelector('link[rel=canonical]')?.href }))
+  report(`selector moves /${path} to /${other}/`, after.path.endsWith(`/${other}/`) && after.lang === other && after.canonical.endsWith(`/${other}/`), JSON.stringify(after))
   await ctx.close()
 }
 

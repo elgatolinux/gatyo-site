@@ -16,7 +16,7 @@ export function Promo() {
   const [near, setNear] = useState(false)
   const [playing, setPlaying] = useState(false)
   const [muted, setMuted] = useState(true)
-  const wantPlay = useRef(canAutoplay())
+  const wantPlay = useRef(typeof window !== 'undefined' && canAutoplay())
   const visible = useRef(false)
 
   // The file is not requested until the frame is about to enter the screen.

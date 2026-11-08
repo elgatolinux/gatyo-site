@@ -5,6 +5,7 @@ export type Accent = (typeof ACCENTS)[number]
 const KEY = 'gatyo-accent'
 
 export function getAccent(): Accent {
+  if (typeof document === 'undefined') return 'violet'
   const current = document.documentElement.getAttribute('data-accent')
   return ACCENTS.includes(current as Accent) ? (current as Accent) : 'violet'
 }

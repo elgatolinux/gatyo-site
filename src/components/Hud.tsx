@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useI18n } from '../i18n/I18n'
+import { langPath, useI18n } from '../i18n/I18n'
 import { DISCORD_URL, type Lang } from '../i18n/dict'
 import { scrollToScene } from '../lib/motion'
 
@@ -65,9 +65,18 @@ export function Hud() {
         </p>
         <div className="lang" role="group" aria-label={t.nav.language}>
           {(['es', 'en'] as Lang[]).map((l) => (
-            <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)}>
+            <a
+              key={l}
+              href={langPath(l)}
+              hrefLang={l}
+              aria-current={lang === l ? 'true' : undefined}
+              onClick={(e) => {
+                e.preventDefault()
+                setLang(l)
+              }}
+            >
               {l.toUpperCase()}
-            </button>
+            </a>
           ))}
         </div>
       </header>

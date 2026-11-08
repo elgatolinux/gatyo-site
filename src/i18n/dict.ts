@@ -7,9 +7,9 @@ export const MUSIC_CREDIT = 'FALL FROM THE SKY PT. 2 (Slowed) — RomancePlanet 
 
 const es = {
   meta: {
-    title: 'Gatyo · Client para Minecraft Bedrock en Android',
+    title: 'Gatyo · Client para MCPE y Minecraft Bedrock en Android',
     description:
-      'Gatyo es un client para Minecraft Bedrock en Android (1.21.111): shaders, cuatro interfaces y personalización a fondo.',
+      'Gatyo es un client para Minecraft Bedrock (MCPE) 1.21.111 en Android: shaders, cuatro interfaces y personalización a fondo. Únete al Discord.',
   },
   nav: { skip: 'Saltar al Discord', language: 'Idioma', scenes: 'Escenas', top: 'Volver al inicio' },
   slates: {
@@ -96,9 +96,9 @@ export type Dict = typeof es
 
 const en: Dict = {
   meta: {
-    title: 'Gatyo · Client for Minecraft Bedrock on Android',
+    title: 'Gatyo · Client for MCPE and Minecraft Bedrock on Android',
     description:
-      'Gatyo is a client for Minecraft Bedrock on Android (1.21.111): shaders, four interfaces and deep customization.',
+      'Gatyo is a client for Minecraft Bedrock (MCPE) 1.21.111 on Android: shaders, four interfaces and deep customization. Join the Discord.',
   },
   nav: { skip: 'Skip to Discord', language: 'Language', scenes: 'Scenes', top: 'Back to top' },
   slates: {

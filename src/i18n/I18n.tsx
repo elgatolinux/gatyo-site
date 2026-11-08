@@ -4,6 +4,9 @@ import { DICTS, type Dict, type Lang } from './dict'
 const KEY = 'gatyo-lang'
 
 function detect(): Lang {
+  // /es/ and /en/ are fixed by their URL; only the main address detects.
+  const fixed = document.documentElement.dataset.fixedLang
+  if (fixed === 'es' || fixed === 'en') return fixed
   try {
     const saved = localStorage.getItem(KEY)
     if (saved === 'es' || saved === 'en') return saved
@@ -20,8 +23,10 @@ function detect(): Lang {
 
 const Ctx = createContext<{ lang: Lang; t: Dict; setLang: (l: Lang) => void } | null>(null)
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(detect)
+export const langPath = (l: Lang) => `${import.meta.env.BASE_URL}${l}/`
+
+export function I18nProvider({ children, initialLang }: { children: ReactNode; initialLang?: Lang }) {
+  const [lang, setLangState] = useState<Lang>(() => initialLang ?? detect())
   const t = DICTS[lang]
 
   useEffect(() => {
@@ -37,6 +42,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       t,
       setLang: (l: Lang) => {
         setLangState(l)
+        document.documentElement.dataset.fixedLang = l
+        history.replaceState(null, '', langPath(l) + location.hash)
+        document.querySelector('link[rel="canonical"]')?.setAttribute('href', location.origin + langPath(l))
         try {
           localStorage.setItem(KEY, l)
         } catch {

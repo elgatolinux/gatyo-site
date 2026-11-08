@@ -107,8 +107,8 @@ img, video { display: block; max-width: 100%; }
 @media (min-width: 768px) { .hud-slate { display: block; } }
 
 .lang { display: flex; border: 1px solid var(--color-line); border-radius: 999px; background: rgb(var(--panel2-rgb) / .72); }
-.lang button { font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; padding: 9px 13px; min-height: 40px; min-width: 44px; color: var(--color-fg2); border-radius: 999px; cursor: pointer; }
-.lang button[aria-pressed='true'] { background: var(--color-panel); color: var(--color-fg); }
+.lang a { display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; padding: 9px 13px; min-height: 40px; min-width: 44px; color: var(--color-fg2); border-radius: 999px; text-decoration: none; }
+.lang a[aria-current] { background: var(--color-panel); color: var(--color-fg); }
 
 .rail { display: none; }
 @media (min-width: 768px) {
@@ -168,6 +168,10 @@ img, video { display: block; max-width: 100%; }
 .swatches span { width: 30px; height: 30px; border-radius: 8px; box-shadow: 0 0 0 1px rgba(245, 235, 255, .22); }
 
 /* ---------- hero ---------- */
+/* the text is in the HTML for search engines; it stays hidden behind the preloader */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.is-in) :is(.hero-ch, .hero-fade) { opacity: .02; }
+}
 .scene--hero .scene-in { min-height: 100svh; padding-top: calc(var(--hud) + 24px); padding-bottom: 104px; text-align: center; align-items: center; position: relative; }
 .scene--hero .scene-bg { -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - var(--ov)), transparent 100%); mask-image: linear-gradient(to bottom, #000 calc(100% - var(--ov)), transparent 100%); }
 .scene--hero .scene-bg::after { background: rgba(11, 6, 20, .14); }
