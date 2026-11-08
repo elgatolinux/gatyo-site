@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useI18n } from '../i18n/I18n'
 import { asset, FULL, gsap, LITE, liteReveal, useMotion } from '../lib/motion'
 
@@ -12,12 +12,32 @@ export function Slate({ n }: { n: keyof ReturnType<typeof useI18n>['t']['slates'
   )
 }
 
-export function SceneBg({ art, eager = false }: { art: string; eager?: boolean }) {
+export function SceneBg({ art, eager = false, defer = false }: { art: string; eager?: boolean; defer?: boolean }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [show, setShow] = useState(!defer)
+
+  // A scene that peeks through the end of the hero waits for the first scroll:
+  // that strip is almost transparent and is not worth loading on arrival.
+  useEffect(() => {
+    if (!defer || !ref.current) return
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setShow(true)
+          io.disconnect()
+        }
+      },
+      { rootMargin: '0px 0px -30% 0px' },
+    )
+    io.observe(ref.current)
+    return () => io.disconnect()
+  }, [defer])
+
   return (
-    <div className="scene-bg" aria-hidden="true">
+    <div ref={ref} className="scene-bg" aria-hidden="true">
       <picture>
-        <source media="(min-width: 768px)" srcSet={asset(`media/art/${art}-w.webp`)} />
-        <img src={asset(`media/art/${art}-p.webp`)} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+        {show && <source media="(min-width: 768px)" srcSet={asset(`media/art/${art}-w.webp`)} />}
+        <img src={show ? asset(`media/art/${art}-p.webp`) : undefined} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
       </picture>
     </div>
   )
@@ -93,7 +113,7 @@ export function Scene({
 
   return (
     <section ref={ref} id={`sc-${n}`} data-scene={n} className={`scene ${className}`}>
-      <SceneBg art={art} eager={eager} />
+      <SceneBg art={art} eager={eager} defer={n === '02'} />
       <div data-out className="scene-layer">
         <div data-in className="scene-in">
           {children}
